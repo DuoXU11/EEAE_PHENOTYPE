@@ -74,9 +74,9 @@ popDEB <- function(allPar, dataf = NULL, timef = NULL, dataX = NULL, timeX = NUL
       }else{funcT = dataT}
     }
     
-    out[[i]] <- indDEB(times, funcT, funcf, funcX, stateInit, par_ind)
-    # eval(parse(text=paste("out[[i]]$f <-", c("funcf","funcf(out$time)")[is.function(funcf)+1])))
-    # eval(parse(text=paste("out[[i]]$temp <-", c("funcT","funcT(out$time)")[is.function(funcT)+1])))
+    out[[i]] <- as.data.frame(indDEB(times, funcT, funcf, funcX, stateInit, par_ind))
+    eval(parse(text=paste("out[[i]]$f <-", c("rep(funcf, times = nrow(out[[i]]))","funcf(out[[i]]$time)")[is.function(funcf)+1])))
+    eval(parse(text=paste("out[[i]]$temp <-", c("rep(funcT, times = nrow(out[[i]]))","funcT(out[[i]]$time)")[is.function(funcT)+1])))
     
   }
   

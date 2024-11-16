@@ -7,9 +7,9 @@ rm(list=ls())
 dataf = 1
 
 # Temperature (constant)
-dataT = 293.15 
+dataT = matrix(seq(278.15,303.15,by=5), ncol = 1) 
 ## modify
-#dataT=seq(5,30,5)
+
 
 # Retrieve parameters
 source("par_salmon.R")
@@ -20,11 +20,17 @@ par$t_max = 400 # in days
 par$dt = 1 # time step (in days)
 
 # Transform parameter data.frame to matrix
-allPar <- as.matrix(par)
+allPar <- list_rbind(rep(list(par), times = nrow(dataT)))
+allPar$ind <- as.numeric(row.names(allPar))
+allPar <- as.matrix(allPar)
 dataf <- as.matrix(dataf)
 dataT <- as.matrix(dataT)
 
 # Run popDEB function
 source("popDEB.R")
 test <- popDEB(allPar, dataf = dataf, dataT = dataT)
-View(test[[1]])
+View(test[[6]])
+
+
+write.csv(test,"C:/Users/许多/Desktop/DEB.csv")
+
