@@ -25,13 +25,40 @@ DEBc_std <- function(t, y, data){
     T_ = T_amb # ambient temperature in K
     anti_dot <- exp(T_A/T_1 - T_A/T_) #temperature correction factor for rates (time-dependent parameters)
     
+    #### Seuils cycles de vie #### -----------------------------------------------------------------------------------
+    
+    # E_Hb = E_Hb # maturit? ? la naissance - acceleration starts
+    # E_Hj = E_Hj # Maturity at metamorphosis - acceleration ceases
+    # E_Hp = E_Hp # maturit? ? la pubert?
+    
+    #### Metamorphosis #### ------------------------------------------------------------------------------------------
+    
+    # Lw_b <- Lw_b
+    sM = s_M # s_M = l_j/ l_b; when j stage is reached
+    
+    L = V^(1/3)
+    Lb = Lw_b*del_M
+    
+    s_M = 1 # s_M acceleration before birth
+    if (E_H >= E_Hb & E_H < E_Hj) { # between birth and juv
+      s_M = (L/Lb)
+    }
+    if (E_H >= E_Hj) { # after metamorphosis
+      s_M = sM
+    }
+    
     #### DEB Primary Parameters #### ---------------------------------------------------------------------------------
     
-    p_Am_dot = p_Am * anti_dot # maximum assimilation rate
-    p_M_dot = p_M * anti_dot # volume-specific somatic maintenance costs
-    p_T_dot = p_T * anti_dot # surface-area-specific somatic maintenance costs
-    v_dot = v * anti_dot # energy conductance
-    k_J_dot = k_J * anti_dot # maturity maintenance costs
+    p_Am_dot = p_Am * anti_dot * s_M # flux d'assimilation specifique max corrig? pour la temp?rature
+    p_M_dot = p_M * anti_dot # couts maintenance somatique specifique au volume
+    p_T_dot = p_M * anti_dot # couts maintenance somatique surface-specifique
+    E_G = E_G # couts structure volume-specifique
+    v_dot = v * anti_dot * s_M # conductance energetique
+    kap = kap # coef d'allocation
+    k_J_dot = k_J * anti_dot # cout de maintenance de maturit?
+    kap_R = kap_R # fraction d'energie allou?e au soma
+    E_0 <- E_0 # initial energy of one egg
+    s_G <- s_G # Gomperz stress coefficient
     h_a_ddot <- h_a * anti_dot^2 # Weibull acceleration
     
     #### Food #### -------------------------------------------------------------------------------------------
@@ -47,6 +74,8 @@ DEBc_std <- function(t, y, data){
     if(is.numeric(funcf)){
       f = funcf
     }else{f = funcf(t)}
+    
+    
     
     #### DEB Coumpound Parameters #### -------------------------------------------------------------------------------
     

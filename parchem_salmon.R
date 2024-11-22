@@ -36,7 +36,7 @@ w_V = w_O[2,] # should be 23.9: OK !
 w_E = w_O[3,] # should be 23.9: OK !
 
 # specific density for dry weight
-d_V = 0.1              # specific density for dry weight in structure (V) g/cm^3 - fixed to AmP default value
+d_V = 0.2              # specific density for dry weight in structure (V) g/cm^3
 d_E = d_V              # specific density for dry weight in reserve (V) g/cm^3 
 M_V = d_V/ w_V          # mol/cm^3, [M_V] volume-specific mass of structure
 

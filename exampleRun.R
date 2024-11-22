@@ -1,5 +1,5 @@
 #### Initialisation #### ------------------------------------------------------------------------------------------------------
-
+library(purrr)
 # Packages
 rm(list=ls())
 
@@ -16,7 +16,7 @@ source("par_salmon.R")
 source("parchem_salmon.R")
 
 # Fix maximum length and time step
-par$t_max = 400 # in days
+par$t_max = 2000 # in days
 par$dt = 1 # time step (in days)
 
 # Transform parameter data.frame to matrix
@@ -29,8 +29,8 @@ dataT <- as.matrix(dataT)
 # Run popDEB function
 source("popDEB.R")
 test <- popDEB(allPar, dataf = dataf, dataT = dataT)
-View(test[[6]])
+View(test[[4]])
 
 
-write.csv(test,"C:/Users/许多/Desktop/DEB.csv")
+#write.csv(test,"C:/Users/许多/Desktop/DEB.csv")
 

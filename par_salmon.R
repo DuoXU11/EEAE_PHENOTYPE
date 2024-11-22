@@ -21,6 +21,7 @@ par <- data.frame("del_M"=0.1783, ## shape coefficient
                   "s_G"=  1, ## Gompertz stress 
                   "v"=	  0.029776, ## Energy conductance
                   "Lw_b"= 2.486, ## Length at birth at T_ref and ad libitum food
+                  "s_M" =	5.43748,
                   "E_0" = 1584.51, ## Egg energy content at T_ref and ad libitum food
                   "L_0"=  10^(-6) # ?(0.85) initial length (embryo)
 )
