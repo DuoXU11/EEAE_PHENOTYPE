@@ -1,6 +1,6 @@
 # Get outputs of DEB model for a given set of parameters and forcing variables 
 
-indDEB <- function(times, funcT, funcf, funcX, stateInit, par_ind){
+indDEB <- function(times, funcT, funcf, funcX, funcP, stateInit, par_ind){
   # t: numeric vector of time steps (in days) at which states variables should be computed
   # funcT: scalar giving the constant value of ambient T or spline function giving T as a function of time
   # funcf: same for f
@@ -8,7 +8,7 @@ indDEB <- function(times, funcT, funcf, funcX, stateInit, par_ind){
   # par_ind: list giving the parameters' values for the individual (see par_daphnia.R for an example)
   
   # Solve ODE system
-  res <- ode(y = stateInit, times = times, 
+  res <- ode(y = stateInit, times = times, funcP = funcP,
              func = DEBc_std, rootfun = rootfun,
              parms = par_ind, method="radau")
   out <- matrix(NA,nrow = nrow(res), ncol = 16)

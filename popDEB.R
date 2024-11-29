@@ -7,7 +7,8 @@
 # - dataT : matrix of temperatures (1 row per individual and 1 column per time step)
 # - timeT : vector of time steps at which temperature was "measured"
 
-popDEB <- function(allPar, dataf = NULL, timef = NULL, dataX = NULL, timeX = NULL, dataT, timeT = NULL){
+popDEB <- function(allPar, dataf = NULL, timef = NULL, dataX = NULL, timeX = NULL, 
+                   dataT, timeT = NULL, dataP = NULL, timeP = NULL){
   
   library(deSolve)
   
@@ -29,6 +30,11 @@ popDEB <- function(allPar, dataf = NULL, timef = NULL, dataX = NULL, timeX = NUL
   if (nrow(dataT) == 1 & ncol(dataT) > 1){
     funcT <- splinefun(timeT, dataT, method='natural',ties = mean)
   }
+  ###################
+  if(nrow(dataP)>1 & ncol(dataP)>1){
+    funcP <- splinefun(timeP, dataP[i,], method='natural',ties = mean)
+  }
+  
   
   out <- vector('list', nrow(allPar))
   
@@ -74,7 +80,16 @@ popDEB <- function(allPar, dataf = NULL, timef = NULL, dataX = NULL, timeX = NUL
       }else{funcT = dataT}
     }
     
-    out[[i]] <- as.data.frame(indDEB(times, funcT, funcf, funcX, stateInit, par_ind))
+    if(nrow(dataP)>1 & ncol(dataP)>1){
+      funcP <- splinefun(timeP, dataP[i,], method='natural',ties = mean)
+    }
+    if(ncol(dataP)==1){
+      if(nrow(dataP)>1){funcP <- dataP[i,]
+      }else{funcP = dataP}
+    }
+
+    
+    out[[i]] <- as.data.frame(indDEB(times, funcT, funcf, funcX, funcP, stateInit, par_ind))
     eval(parse(text=paste("out[[i]]$f <-", c("rep(funcf, times = nrow(out[[i]]))","funcf(out[[i]]$time)")[is.function(funcf)+1])))
     eval(parse(text=paste("out[[i]]$temp <-", c("rep(funcT, times = nrow(out[[i]]))","funcT(out[[i]]$time)")[is.function(funcT)+1])))
     

@@ -13,7 +13,7 @@
 # - data : primary parameters
 
 
-DEBc_std <- function(t, y, data){
+DEBc_std <- function(t, y, data, funcP = NULL){
   with(as.list(c(y,data)), {
     
     #### Temperature Correction #### --------------------------------------------------------------------------------
@@ -24,6 +24,14 @@ DEBc_std <- function(t, y, data){
     T_1 = T_ref #reference temperature in K
     T_ = T_amb # ambient temperature in K
     anti_dot <- exp(T_A/T_1 - T_A/T_) #temperature correction factor for rates (time-dependent parameters)
+    
+    ############ Parasite density per cm²
+    if (is.numeric(funcP)) {
+      P_density <- funcP
+    } else {
+      P_density <- funcP(t)
+    }
+    
     
     #### Seuils cycles de vie #### -----------------------------------------------------------------------------------
     
@@ -38,6 +46,8 @@ DEBc_std <- function(t, y, data){
     
     L = V^(1/3)
     Lb = Lw_b*del_M
+    ######################
+    P_eff <- P_density * L^2  # Effective parasite density based on surface area
     
     s_M = 1 # s_M acceleration before birth
     if (E_H >= E_Hb & E_H < E_Hj) { # between birth and juv
@@ -50,7 +60,9 @@ DEBc_std <- function(t, y, data){
     #### DEB Primary Parameters #### ---------------------------------------------------------------------------------
     
     p_Am_dot = p_Am * anti_dot * s_M # flux d'assimilation specifique max corrig? pour la temp?rature
-    p_M_dot = p_M * anti_dot # couts maintenance somatique specifique au volume
+    
+    p_M_dot = p_M * (1 + alpha * P_eff) * anti_dot # couts maintenance somatique specifique au volume
+    
     p_T_dot = p_M * anti_dot # couts maintenance somatique surface-specifique
     E_G = E_G # couts structure volume-specifique
     v_dot = v * anti_dot * s_M # conductance energetique
@@ -75,7 +87,9 @@ DEBc_std <- function(t, y, data){
       f = funcf
     }else{f = funcf(t)}
     
-    
+    ############## Adjust food availability (f) based on parasite load
+    f_adjusted <- f * (1 - beta * P_eff)
+    f_adjusted <- max(f_adjusted, 0)  # Ensure f remains non-negative
     
     #### DEB Coumpound Parameters #### -------------------------------------------------------------------------------
     
@@ -87,7 +101,8 @@ DEBc_std <- function(t, y, data){
     
     # Energy fluxes ----
     
-    p_A_dot = (p_Am_dot * f * V^(2/3)) # Assimilation
+    p_A_dot = (p_Am_dot * f_adjusted * V^(2/3)) # Assimilation
+    
     p_S_dot = p_M_dot * V + p_T_dot * V^(2/3) # Maintenance somatique
     p_C_dot = (E/V) * (E_G * v_dot * V^(2/3) + p_S_dot) / (kap * E/V + E_G) # Mobilisation surface-specifique
     p_G_dot = (kap * p_C_dot - p_S_dot) # Growth
