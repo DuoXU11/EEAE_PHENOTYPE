@@ -10,7 +10,7 @@ dataf = 1
 dataT = matrix(seq(278.15,303.15,by=5), ncol = 1) 
 
 # Parasite density                      ##adjust
-dataP = matrix(seq(0,0,length=6), ncol = 1) 
+dataP = matrix(seq(0,1,length=6), ncol = 1) 
 alpha <- 0.1 # Maintenance increase (10% per unit parasite density)
 beta <- 0.07# Assimilation reduction (7% per unit parasite density)
 
@@ -43,8 +43,20 @@ dataP <- as.matrix(dataP)
 source("popDEB.R")
 
 test <- popDEB(allPar, dataf = dataf, dataT = dataT, dataP = dataP)
-View(test[[4]])
+View(test[[6]])
+
+for (id in 1:6) {
+  testT<-test[[id]]
+  counter<-1
+  strs<-c("0->1","1->2")
+  
+  for (i in 1:(nrow(testT) - 1)){
+    if ((testT[i+1,]$stage - testT[i,]$stage)==1){
+      print(paste(id,i,dataT[id,],strs[counter]))
+      counter<-counter+1
+    }
+  }
+}
 
 
-#write.csv(test,"C:/Users/许多/Desktop/DEB.csv")
 

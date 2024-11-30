@@ -24,6 +24,9 @@ DEBc_std <- function(t, y, data, funcP = NULL){
     T_1 = T_ref #reference temperature in K
     T_ = T_amb # ambient temperature in K
     anti_dot <- exp(T_A/T_1 - T_A/T_) #temperature correction factor for rates (time-dependent parameters)
+    # anti_dot = exp(T_A/T_1) / exp(T_A/T_)
+    # anti_dot = s(T_) / s(T_1)
+    # 
     
     ############ Parasite density per cm²
     if (is.numeric(funcP)) {
@@ -147,6 +150,6 @@ DEBc_std <- function(t, y, data, funcP = NULL){
 ### Root function -------------
 ### Integration stops when S < 0.001
 
-rootfun <- function (t, y, data) {
+rootfun <- function (t, y, data, funcP) {
   return(y[7] - 0.001)
 }
