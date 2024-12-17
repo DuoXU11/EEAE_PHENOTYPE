@@ -18,12 +18,26 @@ DEBc_std <- function(t, y, data, funcP = NULL){
     
     #### Temperature Correction #### --------------------------------------------------------------------------------
     
+#                           no data available to use
+#     s_T <- function(T) {
+#       
+#       T_AL <- 300   
+#       T_AH <- 315   
+#       T_L  <- 273   
+#       T_H  <- 303  
+#       
+#       term1 <- exp((T_AL / T) - (T_AL / T_L))
+#       term2 <- exp((T_AH / T_H) - (T_AH / T))
+#       return(1 / (1 + term1 + term2))
+#     }
+#     
+    
     if(is.numeric(funcT)){
       T_amb = funcT
     }else{T_amb = funcT(t)}
     T_1 = T_ref #reference temperature in K
     T_ = T_amb # ambient temperature in K
-    anti_dot <- exp(T_A/T_1 - T_A/T_) #temperature correction factor for rates (time-dependent parameters)
+     anti_dot <- exp(T_A/T_1 - T_A/T_) #temperature correction factor for rates (time-dependent parameters)
     # anti_dot = exp(T_A/T_1) / exp(T_A/T_)
     # anti_dot = s(T_) / s(T_1)
     # 
@@ -41,6 +55,7 @@ DEBc_std <- function(t, y, data, funcP = NULL){
     # E_Hb = E_Hb # maturit? ? la naissance - acceleration starts
     # E_Hj = E_Hj # Maturity at metamorphosis - acceleration ceases
     # E_Hp = E_Hp # maturit? ? la pubert?
+     
     
     #### Metamorphosis #### ------------------------------------------------------------------------------------------
     
